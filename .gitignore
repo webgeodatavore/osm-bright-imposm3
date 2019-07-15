@@ -1,0 +1,10 @@
+osm-bright/shp/simplified-water-polygons-split-3857/
+osm-bright/shp/water-polygons-split-3857/
+osm-bright/shp/ne_10m_admin_0_boundary_lines_land/
+cache/
+tmp/
+node_modules/
+.kosmtik-config.yml
+osm-bright/project.mml
+*.zip
+*.pbf

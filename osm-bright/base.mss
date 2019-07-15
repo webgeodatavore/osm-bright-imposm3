@@ -12,7 +12,7 @@
 
 #land-low[zoom>=0][zoom<10],
 #land-high[zoom>=10] {
-  polygon-fill: @land;
+  polygon-fill: @water;
   polygon-gamma: 0.75;
 }
 
@@ -103,7 +103,7 @@
 /* WATER AREAS
 /* ================================================================== */
 
-Map { background-color: @water; }
+Map { background-color: @land; }
 
 #water_gen0[zoom>3][zoom<=9],
 #water_gen1[zoom>9][zoom<=12],

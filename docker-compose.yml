@@ -1,0 +1,42 @@
+version: "3"
+services:
+  db:
+    image: "kartoza/postgis:9.6-2.4"
+    hostname: db
+    container_name: "postgis_osm"
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - ${POSTGIS_DATA_PATH}:/var/lib/postgresql
+    env_file:
+      - .env
+    healthcheck:
+        test: "exit 0"
+  imposm3:
+    image: jawg/imposm3
+    volumes:
+      - .:/share-carto
+      - ./cache:/tmp/imposm3
+      - ./${PBF_NAME}:/opt/imposm3/${PBF_NAME}
+      - ./imposm3/mapping.json:/opt/imposm3/mapping.json
+    network_mode: "host"
+    env_file:
+      - .env
+  kosmtik:
+    image: kosmtik:v1
+    build:
+      context: .
+      dockerfile: Dockerfile.kosmtik
+    volumes:
+      - .:/share-carto
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - "127.0.0.1:6789:6789"
+    # network_mode: "host"
+    environment:
+      - PGHOST=db
+    stdin_open: true
+    tty: true
