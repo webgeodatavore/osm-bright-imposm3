@@ -1,4 +1,4 @@
-version: "3"
+version: "2.1"
 services:
   db:
     image: "kartoza/postgis:9.6-2.4"
@@ -10,8 +10,13 @@ services:
       - ${POSTGIS_DATA_PATH}:/var/lib/postgresql
     env_file:
       - .env
+    # healthcheck:
+    #     test: "exit 0"
     healthcheck:
-        test: "exit 0"
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   imposm3:
     image: jawg/imposm3
     volumes:
@@ -22,6 +27,9 @@ services:
     network_mode: "host"
     env_file:
       - .env
+    depends_on:
+      db:
+        condition: service_healthy
   kosmtik:
     image: kosmtik:v1
     build:
@@ -29,6 +37,7 @@ services:
       dockerfile: Dockerfile.kosmtik
     volumes:
       - .:/share-carto
+    network_mode: "host"
     env_file:
       - .env
     depends_on:
@@ -36,6 +45,9 @@ services:
     ports:
       - "127.0.0.1:6789:6789"
     # network_mode: "host"
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       - PGHOST=db
     stdin_open: true
